@@ -17,6 +17,7 @@ You can ask natural-language questions about simulated network issues (e.g., "Wh
 ## Demo
 
 <img width="1917" height="1086" alt="Screenshot 2025-12-12 123818" src="https://github.com/user-attachments/assets/5faf21a0-8baf-4855-8ea1-e38be35a5eb7" />
+
 ## Quick Start
 
 ### 1. Install Ollama
