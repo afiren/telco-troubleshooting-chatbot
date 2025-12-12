@@ -16,8 +16,7 @@ You can ask natural-language questions about simulated network issues (e.g., "Wh
 
 ## Demo
 
-![chatbot](https://github.com/user-attachments/assets/f8408b40-27d1-4850-afe6-b229f15d3e40)
-
+<img src="https://github.com/user-attachments/assets/f8408b40-27d1-4850-afe6-b229f15d3e40" alt="chatbot demo" width="800"/>
 
 ## Quick Start
 
