@@ -1,0 +1,63 @@
+Title: Telco AI Knowledge Base for Network Troubleshooting Assistant
+
+1. Core Mission
+The goal is to minimize network downtime and reduce trouble-ticket resolution time by enabling engineers to “Talk to Your Network” using natural language.
+
+2. Key Data Sources for Troubleshooting
+- System logs and device logs
+- Alarms and alerts
+- KPIs (Key Performance Indicators)
+- Configuration files and parameters
+- Trouble tickets (structured + unstructured notes)
+- CRM and customer complaint data
+- Equipment vendor manuals
+
+3. Common Root Causes (frequent in real networks)
+- Configuration errors or mismatches
+- Interface flaps / ISIS or BGP neighbor drops
+- Capacity exhaustion (radio, transport, core)
+- Hardware faults or degradation
+- Software bugs after upgrade
+- External factors (fiber cut, power outage)
+- Overloaded or misconfigured load balancers / firewalls
+
+4. Recommended Actions by Symptom
+Connection slow or high latency → Check interface utilization, retransmissions, buffer drops, QoS policy.
+Packet loss or interface down → Verify physical layer, run hardware diagnostics, check neighbor state.
+Sudden KPI degradation → Compare with baseline, look for recent config changes or upgrades.
+Repeated alarms on same NE → Likely hardware issue → trigger predictive maintenance.
+Customer reports “no service” → Correlate complaint location with cell/outage map.
+
+5. LLM Best Practices in Telco Environment
+- Always use Retrieval-Augmented Generation (RAG) with internal documents to prevent hallucinations.
+- Prefer smaller, fine-tuned or domain-adapted models (SLM/MLM) over giant generic models.
+- Enforce explainability: every answer must cite the source (log snippet, alarm, manual section).
+- Security: never send real customer data or PII to public APIs.
+
+6. Important Acronyms and Terminology
+RCA  = Root Cause Analysis  
+NSO  = Network that Self-Operates  
+LNA  = Large Network Agent (high-level coordinator)  
+NMA  = Network Module Agent (RAN, Core, Transport, Optical)  
+SemCom = Semantic Communications (transmit meaning/intent, not raw data)  
+TLLM = Telco-specific Large Language Model  
+GTAA = Global Telecom AI Alliance
+
+7. Example Troubleshooting Dialogue
+User: “Cell 12345 has high drop rate since 02:00”
+Assistant: Retrieved alarm “ISIS neighbor down on interface Te7/0/0” at 01:58. Config change detected at 01:45 (MTU mismatch after upgrade). Recommended action: rollback MTU or adjust neighbor config, then clear ISIS adjacency.
+
+8. Predictive Maintenance Triggers
+- Unusual rise in CRC errors → schedule fiber or hardware check
+- Temperature alarms trending upward → plan cooling maintenance
+- Retransmission rate > 3 % over 24 h → investigate radio interference or capacity
+
+9. Zero-Touch & Intent-Based Principles
+Customer says “I need more bandwidth for my office” → LLM translates intent → agentic workflow provisions extra bearer automatically without manual tickets.
+
+10. Hallucination Mitigation Rules
+- Never invent log entries or alarm IDs.
+- If context does not contain the answer, respond “I don’t have sufficient information in the current logs.”
+- Always reference the retrieved document or log line.
+
+End of Telco Manual
