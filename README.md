@@ -1,149 +1,101 @@
-# LLM Network Troubleshooting
+# Telco Network Troubleshooting Chatbot (LLM + RAG Prototype)
 
-A telco network troubleshooting assistant using RAG (Retrieval-Augmented Generation) with local LLM via Ollama.
+A simple, fully local chatbot that demonstrates the "Talk to Your Network" concept using a small LLM, Retrieval-Augmented Generation (RAG), and synthetic telecom logs.
+
+You can ask natural-language questions about simulated network issues (e.g., "Why is latency high on Core-Router01?" or "Show me all ISIS neighbor drops") and get grounded answers with root-cause suggestions and recommended actions.
+
+**This is a prototype / proof-of-concept** — it runs entirely on your laptop, uses fake data, and is not meant for production networks.
 
 ## Features
 
-- **Data Validation**: Comprehensive tests to validate data before using LLM resources
-- **RAG Pipeline**: Uses local vector store (FAISS) with Ollama embeddings
-- **Telco-Specific**: Includes telco jargon and network troubleshooting knowledge
+- Conversational troubleshooting interface (Streamlit)
+- RAG over synthetic syslog-style logs + a small telco knowledge base
+- Local LLM inference with Ollama (no cloud, no API keys)
+- Fast local embeddings (Hugging Face sentence-transformers)
+- Easy data regeneration for testing different scenarios
 
-## Setup
+## Demo
 
-1. Install dependencies:
+<img width="1917" height="1086" alt="Screenshot 2025-12-12 123818" src="https://github.com/user-attachments/assets/5b3a0421-57b2-43c5-aaaa-d36a3e3ac338" />
+
+
+## Quick Start
+
+### 1. Install Ollama
+
+Download and install from https://ollama.com
+
+Pull a small model (recommended for speed on laptops):
+
 ```bash
-pip install langchain-ollama langchain-community langchain-core pandas faiss-cpu pytest streamlit
+ollama pull llama3.2:3b
 ```
 
-2. Generate sample data (if needed):
+(Other small models like phi3:mini or gemma2:2b also work well)
+
+### 2. Set Up the Python Environment
+
+```bash
+git clone https://github.com/yourusername/telco-troubleshooting-chatbot.git
+cd telco-troubleshooting-chatbot
+pip install -r requirements.txt
+```
+
+### 3. Generate Synthetic Logs
+
 ```bash
 python data_generator.py
 ```
 
-3. Ensure Ollama is running with the mistral:7b model:
-```bash
-ollama pull mistral:7b
-```
+This creates `data/simulated_logs.csv` with realistic telecom-style alerts, KPIs, and actions.
 
-## Data Validation
-
-Before using the LLM, validate your data to avoid consuming resources with incorrect data.
-
-### Option 1: Run standalone validation script
-```bash
-# Data validation only (fast, no LLM required)
-python validate_data.py
-
-# Include LLM integration tests (requires Ollama running)
-python validate_data.py --test-llm
-```
-
-This will run all validation checks and provide a detailed report.
-
-### Option 2: Run pytest tests
-```bash
-# Data validation tests only
-pytest test_data_validation.py -v
-
-# Include LLM integration tests (requires Ollama running)
-pytest test_data_validation.py -v -m integration
-```
-
-### Option 3: Enable validation in app.py
-Run the app with validation enabled:
-```bash
-# Using environment variable
-VALIDATE_DATA=1 python app.py
-
-# Or using command-line flag
-python app.py --validate
-```
-
-## Validation Checks
-
-### Data Validation (No LLM Required)
-
-1. **Data Files**: Files exist and are readable
-2. **CSV Structure**: Expected columns, data rows, timestamp format, severity values
-3. **Text Content**: File has content and expected keywords
-4. **Document Loading**: Documents can be loaded correctly
-5. **Document Splitting**: Text splitting works and produces valid chunks
-6. **Data Quality**: Overall content size and diversity
-
-### LLM Integration Tests (Requires Ollama Running)
-
-7. **LLM Initialization**: LLM can be initialized and responds to queries
-8. **Embeddings**: Embeddings can be generated (single and batch)
-9. **Vector Store & Retriever**: Vector store creation and document retrieval work
-10. **RAG Chain**: Full RAG pipeline works with test queries
-
-## Quick LLM Test
-
-Test that the LLM works with a simple query:
+### 4. Run the Chatbot
 
 ```bash
-python test_llm_simple.py
+streamlit run app.py
 ```
 
-This will:
-1. Test LLM initialization and basic response
-2. Test the full RAG chain with a sample query
+Open your browser at http://localhost:8501 and start asking questions.
 
-## Usage
+## Example Questions to Try
 
-### Option 1: Streamlit Web UI (Recommended)
-
-Launch the interactive web interface:
-
-```bash
-streamlit run streamlit_app.py
-```
-
-This will:
-- Open a web browser with the chat interface
-- Allow you to ask questions interactively
-- Show retrieved sources for each answer
-- Maintain chat history during the session
-
-**Features:**
-- 💬 Interactive chat interface
-- 📄 View retrieved document sources
-- 🔍 Real-time network issue analysis
-- 💡 Example questions in sidebar
-- 🗑️ Clear chat history button
-
-### Option 2: Python API
-
-Use the RAG chain programmatically:
-
-```python
-from app import rag_chain
-
-# Ask a question
-response = rag_chain.invoke("What causes BGP peer down issues?")
-print(response)
-```
+- "Show me all critical alerts"
+- "What caused the ISIS neighbor drops?"
+- "Any logs with high packet loss?"
+- "Recommend actions for interface flaps"
+- "Why is latency high?"
 
 ## Project Structure
 
 ```
 .
-├── app.py                    # Main application with RAG pipeline
-├── streamlit_app.py          # Streamlit web UI for chatbot
-├── data_generator.py         # Generates sample telco logs
-├── validate_data.py          # Standalone validation script
-├── test_data_validation.py   # Pytest test suite
-├── test_llm_simple.py        # Quick LLM test script
+├── app.py                  # Main Streamlit app + RAG chain
+├── data_generator.py       # Generates synthetic logs
 ├── data/
-│   ├── simulated_logs.csv    # Sample network logs
-│   └── telco_manual.txt      # Telco troubleshooting manual
-└── README.md                 # This file
+│   ├── simulated_logs.csv  # Generated logs
+│   └── telco_manual.txt    # Domain knowledge for RAG
+├── requirements.txt
+└── README.md
 ```
 
-## Best Practices
+## Limitations
 
-- Always validate data before using LLM to save resources
-- Use small, high-quality datasets to respect token limits
-- Include telco-specific jargon (RCA, KPIs, NSOs) in your data
-- Keep chunk sizes reasonable (400 chars with 50 overlap)
+- Fully synthetic data — no real network integration
+- Small local models can be less accurate than giant cloud LLMs
+- No persistence beyond the current session
+- Prototype only — not hardened for production use
 
+## Future Ideas (Contributions Welcome)
+
+- Add agentic workflows (e.g., auto-diagnostics)
+- Connect to network simulators (Mininet, GNS3)
+- Support real (anonymized) log ingestion
+- Fine-tune a telco-specific small model
+
+## License
+
+MIT License — feel free to fork, modify, and use.
+
+---
+
+Built as a personal project to explore LLM applications in telecom network operations.
