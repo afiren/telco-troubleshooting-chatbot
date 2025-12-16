@@ -36,7 +36,7 @@ ollama pull llama3.2:3b
 ### 2. Set Up the Python Environment
 
 ```bash
-git clone https://github.com/yourusername/telco-troubleshooting-chatbot.git
+git clone https://github.com/afiren/telco-troubleshooting-chatbot.git
 cd telco-troubleshooting-chatbot
 pip install -r requirements.txt
 ```
